@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __NAME__
+  labels:
+    app: aidetectorfront
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aidetectorfront
+  template:
+    metadata:
+      labels:
+        app: aidetectorfront
+    spec:
+      imagePullSecrets:
+        - name: velmi-registry
+      containers:
+        - name: aidetectorfront
+          image: __IMAGE_TAG__
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: __NAME__-config
