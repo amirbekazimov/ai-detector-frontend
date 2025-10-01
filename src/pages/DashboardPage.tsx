@@ -205,9 +205,6 @@ const DashboardPage: React.FC = () => {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={site.ai_bot_percentage && site.ai_bot_percentage > 20 ? 'destructive' : 'secondary'}>
-                        {site.ai_bot_percentage?.toFixed(1) || 0}% AI
-                      </Badge>
                       <Button
                         variant="outline"
                         size="sm"
