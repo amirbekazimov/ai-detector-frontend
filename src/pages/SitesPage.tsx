@@ -104,7 +104,7 @@ const SitesPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -192,12 +192,6 @@ const SitesPage: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle>Ваши сайты</CardTitle>
-          <CardDescription>
-            {sites.length === 0 
-              ? 'Сайты еще не добавлены. Добавьте первый сайт для начала отслеживания.' 
-              : `${sites.length} сайт${sites.length === 1 ? '' : sites.length < 5 ? 'а' : 'ов'} настроено`
-            }
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {sites.length === 0 ? (
@@ -220,9 +214,7 @@ const SitesPage: React.FC = () => {
                 <TableRow>
                   <TableHead>Домен</TableHead>
                   <TableHead>Статус</TableHead>
-                  <TableHead>Всего визитов</TableHead>
                   <TableHead>Визиты AI ботов</TableHead>
-                  <TableHead>Процент AI</TableHead>
                   <TableHead>Создан</TableHead>
                   <TableHead className="text-right">Действия</TableHead>
                 </TableRow>
@@ -244,22 +236,9 @@ const SitesPage: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">
-                        <Eye className="w-4 h-4 mr-1 text-gray-400" />
-                        {site.total_events?.toLocaleString() || 0}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
                         <Bot className="w-4 h-4 mr-1 text-red-500" />
                         {site.ai_bot_events?.toLocaleString() || 0}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={site.ai_bot_percentage && site.ai_bot_percentage > 20 ? 'destructive' : 'secondary'}
-                      >
-                        {site.ai_bot_percentage?.toFixed(1) || 0}%
-                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">

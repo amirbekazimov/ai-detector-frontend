@@ -146,7 +146,7 @@ const SiteDetailsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" onClick={() => navigate('/sites')}>
+          <Button className="cursor-pointer" variant="outline" onClick={() => navigate('/sites')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Назад
           </Button>
@@ -180,10 +180,16 @@ const SiteDetailsPage: React.FC = () => {
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{(siteStats?.total_events || 0).toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              За последние {selectedPeriod} дней
-            </p>
+            {siteStats?.total_events ? (
+              <>
+                <div className="text-2xl font-bold">{siteStats.total_events.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">
+                  За последние {selectedPeriod} дней
+                </p>
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">Пока нет информации</div>
+            )}
           </CardContent>
         </Card>
 
@@ -193,10 +199,16 @@ const SiteDetailsPage: React.FC = () => {
             <Bot className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{botTypesStats?.bot_types ? Object.keys(botTypesStats.bot_types).length : 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Различных типов
-            </p>
+            {botTypesStats?.bot_types && Object.keys(botTypesStats.bot_types).length > 0 ? (
+              <>
+                <div className="text-2xl font-bold text-blue-600">{Object.keys(botTypesStats.bot_types).length}</div>
+                <p className="text-xs text-muted-foreground">
+                  Различных типов
+                </p>
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">Пока нет информации</div>
+            )}
           </CardContent>
         </Card>
 
@@ -206,10 +218,16 @@ const SiteDetailsPage: React.FC = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{(siteStats?.unique_visitors || 0).toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              Различных ботов
-            </p>
+            {siteStats?.unique_visitors ? (
+              <>
+                <div className="text-2xl font-bold text-green-600">{siteStats.unique_visitors.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">
+                  Различных ботов
+                </p>
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">Пока нет информации</div>
+            )}
           </CardContent>
         </Card>
 
@@ -219,10 +237,16 @@ const SiteDetailsPage: React.FC = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{siteStats?.events_by_type ? Object.keys(siteStats.events_by_type).length : 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Различных типов событий
-            </p>
+            {siteStats?.events_by_type && Object.keys(siteStats.events_by_type).length > 0 ? (
+              <>
+                <div className="text-2xl font-bold">{Object.keys(siteStats.events_by_type).length}</div>
+                <p className="text-xs text-muted-foreground">
+                  Различных типов событий
+                </p>
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">Пока нет информации</div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -241,34 +265,42 @@ const SiteDetailsPage: React.FC = () => {
               <CardDescription>Распределение по типам ботов</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={botTypesPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {botTypesPieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap justify-center gap-2 mt-4">
-                {botTypesPieData.map((entry, index) => (
-                  <div key={index} className="flex items-center">
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: entry.color }}></div>
-                    <span className="text-sm">{entry.name} ({entry.value})</span>
+              {botTypesPieData.length > 0 ? (
+                <>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={botTypesPieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {botTypesPieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                ))}
-              </div>
+                  <div className="flex flex-wrap justify-center gap-2 mt-4">
+                    {botTypesPieData.map((entry, index) => (
+                      <div key={index} className="flex items-center">
+                        <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: entry.color }}></div>
+                        <span className="text-sm">{entry.name} ({entry.value})</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-gray-500">
+                  Пока нет информации
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -281,30 +313,36 @@ const SiteDetailsPage: React.FC = () => {
               <CardDescription>Визиты ботов во времени</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={dailyStats}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="date" 
-                      tickFormatter={formatDate}
-                    />
-                    <YAxis />
-                    <Tooltip 
-                      labelFormatter={(value) => formatDate(value)}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="ai_bot_events" 
-                      stackId="1"
-                      stroke="#3B82F6" 
-                      fill="#3B82F6"
-                      fillOpacity={0.3}
-                      name="Визиты ботов"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+              {dailyStats.length > 0 ? (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={dailyStats}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="date" 
+                        tickFormatter={formatDate}
+                      />
+                      <YAxis />
+                      <Tooltip 
+                        labelFormatter={(value) => formatDate(value)}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="ai_bot_events" 
+                        stackId="1"
+                        stroke="#3B82F6" 
+                        fill="#3B82F6"
+                        fillOpacity={0.3}
+                        name="Визиты ботов"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-gray-500">
+                  Пока нет информации
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -315,28 +353,34 @@ const SiteDetailsPage: React.FC = () => {
               <CardDescription>Активность различных типов ботов во времени</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={dailyStats}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="date" 
-                      tickFormatter={formatDate}
-                    />
-                    <YAxis />
-                    <Tooltip 
-                      labelFormatter={(value) => formatDate(value)}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="ai_bot_events" 
-                      stroke="#3B82F6" 
-                      strokeWidth={2}
-                      name="Визиты ботов"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              {dailyStats.length > 0 ? (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={dailyStats}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="date" 
+                        tickFormatter={formatDate}
+                      />
+                      <YAxis />
+                      <Tooltip 
+                        labelFormatter={(value) => formatDate(value)}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="ai_bot_events" 
+                        stroke="#3B82F6" 
+                        strokeWidth={2}
+                        name="Визиты ботов"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-gray-500">
+                  Пока нет информации
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
