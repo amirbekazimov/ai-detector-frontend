@@ -23,7 +23,6 @@ import {
   Bot, 
   Users, 
   Eye, 
-  TrendingUp,
   Globe,
 } from 'lucide-react';
 import { dashboardApi, sitesApi, type SiteStats, type DailyStats, type BotTypesStats } from '@/lib/api';
@@ -231,24 +230,6 @@ const SiteDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">События по типам</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            {siteStats?.events_by_type && Object.keys(siteStats.events_by_type).length > 0 ? (
-              <>
-                <div className="text-2xl font-bold">{Object.keys(siteStats.events_by_type).length}</div>
-                <p className="text-xs text-muted-foreground">
-                  Различных типов событий
-                </p>
-              </>
-            ) : (
-              <div className="text-sm text-gray-500">Пока нет информации</div>
-            )}
-          </CardContent>
-        </Card>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
