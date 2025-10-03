@@ -28,7 +28,8 @@ import {
   ExternalLink,
   Calendar,
   Bot,
-  Eye
+  Eye,
+  Code
 } from 'lucide-react';
 import { sitesApi, type Site } from '@/lib/api';
 import { toast } from 'sonner';
@@ -49,9 +50,15 @@ const SitesPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await sitesApi.getSites();
-      setSites(response.data);
+      console.log('Sites API response:', response.data);
+      
+      // Ensure we have an array
+      const sitesData = Array.isArray(response.data) ? response.data : [];
+      setSites(sitesData);
     } catch (error) {
+      console.error('Sites fetch error:', error);
       toast.error('Не удалось загрузить сайты');
+      setSites([]); // Set empty array on error
     } finally {
       setIsLoading(false);
     }
@@ -220,7 +227,7 @@ const SitesPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sites.map((site) => (
+                {sites && sites.length > 0 ? sites.map((site) => (
                   <TableRow key={site.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center">
@@ -259,10 +266,18 @@ const SitesPage: React.FC = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => copySnippet(site.site_id || site.id)}
+                          onClick={() => copySnippet(site.site_id || String(site.id))}
                           title="Копировать код"
                         >
                           <Copy className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(`/sites/${String(site.id)}/tracking-code`, '_blank')}
+                          title="Получить Tracking Code"
+                        >
+                          <Code className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="outline"
@@ -275,7 +290,7 @@ const SitesPage: React.FC = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDeleteSite(site.id, site.domain)}
+                          onClick={() => handleDeleteSite(String(site.id), site.domain)}
                           title="Удалить сайт"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -283,7 +298,13 @@ const SitesPage: React.FC = () => {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                )) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      Сайты не найдены. Создайте первый сайт для начала работы.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           )}
@@ -295,45 +316,160 @@ const SitesPage: React.FC = () => {
         <CardHeader>
           <CardTitle>Руководство по интеграции</CardTitle>
           <CardDescription>
-            Как добавить отслеживание AI Detector на ваш сайт
+            Два метода детекции: JavaScript (простой) и Server-side (надежный)
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <h4 className="font-medium">Шаг 1: Скопируйте код отслеживания</h4>
-            <p className="text-sm text-gray-600">
-              Нажмите кнопку копирования рядом с вашим сайтом, чтобы получить код отслеживания.
-            </p>
+        <CardContent className="space-y-6">
+          {/* Method Selection */}
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-medium text-blue-900 mb-2">Выберите подходящий метод интеграции:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div className="bg-green-50 p-3 rounded border border-green-200">
+                <h5 className="font-medium text-green-800">🌐 JavaScript Method</h5>
+                <p className="text-sm text-green-700 mt-1">Требует javascript включен</p>
+              </div>
+              <div className="bg-purple-50 p-3 rounded border border-purple-200">
+                <h5 className="font-medium text-purple-800">🛡️ Server-side Method</h5>
+                <p className="text-sm text-purple-700 mt-1">Работает с любыми ботами</p>
+              </div>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <h4 className="font-medium">Шаг 2: Добавьте на ваш сайт</h4>
-            <p className="text-sm text-gray-600">
-              Вставьте код в секцию &lt;head&gt; вашего сайта, желательно перед закрывающим тегом &lt;/head&gt;.
-            </p>
+
+          {/* JavaScript Integration */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold flex items-center">
+              <Bot className="w-5 h-5 mr-2 text-green-600" />
+              JavaScript Метод (Client-side)
+            </h3>
+            <div className="space-y-2">
+              <h4 className="font-medium">Шаг 1: Получите код отслеживания</h4>
+              <p className="text-sm text-gray-600">
+                Нажмите кнопку <code className="bg-gray-100 px-1 rounded">Code</code> рядом с вашим сайтом, чтобы получить готовый к установке код.
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Шаг 2: Добавьте на ваш сайт</h4>
+              <p className="text-sm text-gray-600">
+                Вставьте код перед закрывающим тегом <code>&lt;/body&gt;</code> на всех страницах вашего сайта.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium mb-2">Пример кода:</h4>
+              <code className="text-sm text-gray-700 block">
+{`<!-- AI Detector Tracking Code -->
+<script src="http://localhost:8000/api/v1/tracking/YOUR_SITE_ID.js"></script>
+<!-- End AI Detector -->`}
+              </code>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <h4 className="font-medium">Шаг 3: Проверьте отслеживание</h4>
-            <p className="text-sm text-gray-600">
-              Посетите ваш сайт и проверьте панель управления, чтобы убедиться, что визиты отслеживаются.
-            </p>
+
+          {/* Server-side Integration */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold flex items-center">
+              <Globe className="w-5 h-5 mr-2 text-purple-600" />
+              Server-side Метод (Backend)
+            </h3>
+            <div className="space-y-2">
+              <h4 className="font-medium">Шаг 1: Получите server code</h4>
+              <p className="text-sm text-gray-600">
+                Нажмите кнопку <code className="bg-gray-100 px-1 rounded">Code</code> и выберите ваш язык программирования (PHP, Python, Node.js, Nginx, Apache).
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Шаг 2: Установите на сервер</h4>
+              <p className="text-sm text-gray-600">
+                Разместите сгенерированный код на вашем сервере и интегрируйте с вашим веб-фреймворком.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <h5 className="font-medium text-sm mb-1">PHP</h5>
+                <code className="text-xs text-gray-600 block">
+{`include_once 'ai_detector_*.php';`}
+                </code>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <h5 className="font-medium text-sm mb-1">Python</h5>
+                <code className="text-xs text-gray-600 block">
+{`from ai_detector import *
+app.before_request()()`}
+                </code>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <h5 className="font-medium text-sm mb-1">Node.js</h5>
+                <code className="text-xs text-gray-600 block">
+{`app.use(detector.middleware());`}
+                </code>
+              </div>
+            </div>
           </div>
-          
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Пример кода:</h4>
-            <code className="text-sm text-gray-700">
-              {`<!-- AI Detector Script -->
-<script>
-(function() {
-    var script = document.createElement('script');
-    script.src = 'http://localhost:8000/api/v1/tracking/YOUR_SITE_ID.js';
-    script.async = true;
-    document.head.appendChild(script);
-})();
-</script>
-<!-- Конец AI Detector Script -->`}
-            </code>
+
+          {/* Comparison Table */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Сравнение методов</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-sm font-medium">Особенность</th>
+                    <th className="px-4 py-2 text-center text-sm font-medium">JavaScript</th>
+                    <th className="px-4 py-2 text-center text-sm font-medium">Server-side</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-4 py-2 text-sm">Простота установки</td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-green-100 text-green-800">⭐⭐⭐</Badge>
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-orange-100 text-orange-800">⭐⭐</Badge>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 text-sm">Детекция ChatGPT</td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-red-100 text-red-800">❌</Badge>
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-green-100 text-green-800">✅</Badge>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 text-sm">Детекция других ботов</td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-green-100 text-green-800">✅</Badge>
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-green-100 text-green-800">✅</Badge>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 text-sm">IP детекция</td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-gray-100 text-gray-800">❓</Badge>
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <Badge className="bg-green-100 text-green-800">✅</Badge>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Recommendation */}
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+            <h4 className="font-medium text-amber-800 mb-2">💡 Рекомендация:</h4>
+            <p className="text-sm text-amber-700">
+              Для <strong>100% надежной детекции</strong> рекомендуется использовать <strong>Server-side метод</strong>. 
+              Он детектирует ChatGPT и другие AI боты даже когда JavaScript отключен.
+              JavaScript метод подходит для быстрого старта и детекции современных ботов.
+            </p>
           </div>
         </CardContent>
       </Card>

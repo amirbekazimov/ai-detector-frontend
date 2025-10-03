@@ -52,10 +52,9 @@ const SiteDetailsPage: React.FC = () => {
       const days = parseInt(selectedPeriod);
       console.log('Fetching site data for siteId:', siteId, 'days:', days); // Отладка
       
-      const [sitesResponse, statsResponse, dailyResponse, botTypesResponse] = await Promise.all([
+      const [sitesResponse, statsResponse, botTypesResponse] = await Promise.all([
         sitesApi.getSites(),
         dashboardApi.getSiteStats(siteId, days),
-        dashboardApi.getDailyStats(siteId, days),
         dashboardApi.getBotTypesStats(siteId, days)
       ]);
       
@@ -63,17 +62,12 @@ const SiteDetailsPage: React.FC = () => {
       const currentSite = sitesResponse.data.find((s: any) => s.site_id === siteId || s.id === siteId);
       console.log('Current site found:', currentSite); // Отладка
       
-      setSite(currentSite);
+      setSite(currentSite)
       setSiteStats(statsResponse.data);
       setBotTypesStats(botTypesResponse.data);
       
-      // Обрабатываем daily stats и добавляем ai_bot_percentage
-      const processedDailyStats = dailyResponse.data.daily_stats?.map((day: any) => ({
-        ...day,
-        ai_bot_percentage: day.total_events > 0 ? (day.ai_bot_events / day.total_events) * 100 : 0
-      })) || [];
-      
-      setDailyStats(processedDailyStats);
+      // Пока не реализовано - пустой массив
+      setDailyStats([]);
     } catch (error) {
       console.error('Site data error:', error); // Отладка
       toast.error('Не удалось загрузить данные сайта');
@@ -145,7 +139,7 @@ const SiteDetailsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button className="cursor-pointer" variant="outline" onClick={() => navigate('/sites')}>
+          <Button variant="outline" onClick={() => navigate('/sites')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Назад
           </Button>

@@ -58,6 +58,8 @@ export const sitesApi = {
   createSite: (name: string, domain: string) => api.post('/api/v1/sites', { name, domain }),
   deleteSite: (siteId: string) => api.delete(`/api/v1/sites/${siteId}`),
   getSnippet: (siteId: string) => api.get(`/api/v1/sites/${siteId}/snippet`),
+  getTrackingCode: (siteId: string | number) => api.get(`/api/v1/sites/${siteId}/tracking-code`),
+  getServerCode: (siteId: string | number, language: string = 'php') => api.get(`/api/v1/sites/${siteId}/server-code?language=${language}`),
 };
 
 // Dashboard API
@@ -67,8 +69,6 @@ export const dashboardApi = {
     api.get(`/api/v1/dashboard/stats/${siteId}?days=${days}`),
   getSiteVisits: (siteId: string, days: number = 7, limit: number = 50, offset: number = 0, botType?: string) =>
     api.get(`/api/v1/dashboard/visits/${siteId}?days=${days}&limit=${limit}&offset=${offset}${botType ? `&bot_type=${botType}` : ''}`),
-  getDailyStats: (siteId: string, days: number = 7) =>
-    api.get(`/api/v1/dashboard/daily-stats/${siteId}?days=${days}`),
   getBotTypesStats: (siteId: string, days: number = 7) =>
     api.get(`/api/v1/dashboard/bot-types/${siteId}?days=${days}`),
 };
@@ -82,7 +82,7 @@ export interface User {
 }
 
 export interface Site {
-  id: string;
+  id: number;
   site_id?: string;
   name: string;
   domain: string;
@@ -91,6 +91,22 @@ export interface Site {
   ai_bot_events?: number;
   human_events?: number;
   ai_bot_percentage?: number;
+}
+
+export interface TrackingCode {
+  site_id: string;
+  site_name: string;
+  domain: string;
+  tracking_code: string;
+  script_url: string;
+  server_page_url: string;
+  instructions: {
+    step1: string;
+    step2: string;
+    step3: string;
+    step4: string;
+    note: string;
+  };
 }
 
 export interface VisitEvent {
