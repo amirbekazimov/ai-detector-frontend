@@ -41,13 +41,13 @@ const DashboardPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await dashboardApi.getSitesWithStats();
-      const sitesData = response.data.sites; // Backend возвращает {sites: [...], total_sites: N}
+      const sitesData = response.data.sites; 
       console.log('Sites data:', sitesData);
       setSites(sitesData);
       
       if (Array.isArray(sitesData) && sitesData.length > 0) {
         setSelectedSite(sitesData[0]);
-        await fetchSiteDetails(sitesData[0].site_id || sitesData[0].id);
+        await fetchSiteDetails(sitesData[0].site_id || String(sitesData[0].id));
       }
     } catch (error) {
       console.error('Dashboard data error:', error);
@@ -59,29 +59,27 @@ const DashboardPage: React.FC = () => {
 
   const fetchSiteDetails = async (siteId: string) => {
     try {
-      console.log('Fetching site details for siteId:', siteId); // Отладка
-      const [statsResponse, dailyResponse, botTypesResponse] = await Promise.all([
+      console.log('Fetching site details for siteId:', siteId); 
+      const [statsResponse, botTypesResponse] = await Promise.all([
         dashboardApi.getSiteStats(siteId, 7),
-        dashboardApi.getDailyStats(siteId, 7),
         dashboardApi.getBotTypesStats(siteId, 7)
       ]);
       
-      console.log('Site stats response:', statsResponse.data); // Отладка
-      console.log('Daily stats response:', dailyResponse.data); // Отладка
-      console.log('Bot types response:', botTypesResponse.data); // Отладка
+      console.log('Site stats response:', statsResponse.data); 
+      console.log('Bot types response:', botTypesResponse.data); 
       
       setSiteStats(statsResponse.data);
-      setDailyStats(dailyResponse.data);
+      setDailyStats([]); 
       setBotTypesStats(botTypesResponse.data);
     } catch (error) {
-      console.error('Site details error:', error); // Отладка
+      console.error('Site details error:', error); 
       toast.error('Не удалось загрузить детали сайта');
     }
   };
 
   const handleSiteSelect = async (site: Site) => {
     setSelectedSite(site);
-    await fetchSiteDetails(site.site_id || site.id);
+    await fetchSiteDetails(site.site_id || String(site.id));
   };
 
   const copySnippet = async (siteId: string) => {
@@ -210,7 +208,7 @@ const DashboardPage: React.FC = () => {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          copySnippet(site.site_id || site.id);
+                          copySnippet(site.site_id || String(site.id));
                         }}
                         title="Копировать JavaScript код"
                       >

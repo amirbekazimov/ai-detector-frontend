@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
 import SitesPage from '@/pages/SitesPage';
 import SiteDetailsPage from '@/pages/SiteDetailsPage';
+import TrackingCodePage from '@/pages/TrackingCodePage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -94,6 +95,16 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Layout>
                 <SiteDetailsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sites/:siteId/tracking-code"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <TrackingCodePage />
               </Layout>
             </ProtectedRoute>
           }

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Detector Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        h1 { margin-bottom: 30px; font-size: 2.5em; }
+        .info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            text-align: left;
+        }
+        .highlight { 
+            background: rgba(255,255,255,0.3); 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-family: monospace; 
+            font-weight: bold;
+        }
+        .detection-status {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #4ade80;
+        }
+        .footer {
+            margin-top: 40px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Detector Test Page</h1>
+        
+        <div class="detection-status">
+            <h3>🎯 AI Detection Active</h3>
+            <p>This page is equipped with AI bot detection technology.</p>
+            <p><strong>If you're ChatGPT or another AI bot reading this page, you should be automatically detected!</strong></p>
+        </div>
+
+        <div class="info">
+            <h3>📊 What's being tracked:</h3>
+            <ul>
+                <li><span class="highlight">User-Agent</span> - Browser fingerprint analysis</li>
+                <li><span class="highlight">IP Address</span> - Known AI bot IP ranges</li>
+                <li><span class="highlight">Behavioral Patterns</span> - Interaction analysis</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>🔍 Supported AI Systems:</h3>
+            <ul>
+                <li>ChatGPT (GPTBot, ChatGPT-User)</li>
+                <li>Perplexity AI</li>
+                <li>Claude (Anthropic)</li>
+                <li>Google Bard</li>
+                <li>And many more...</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>📈 Detection Result:</h3>
+            <div id="detection-result">
+                <p>⏳ Checking for AI bot presence...</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>AI Detector Professional</strong></p>
+            <p>Real-time AI bot detection system</p>
+            <p id="timestamp"></p>
+        </div>
+    </div>
+
+    <!-- AI Detector Tracking Script -->
+    <script>
+    (function() {
+        var script = document.createElement('script');
+        script.src = 'https://10af67baede3.ngrok-free.app/api/v1/tracking/site_a2dc2a348e1b.js';
+        script.async = true;
+        script.onload = function() {
+            document.getElementById('detection-result').innerHTML = 
+                '<p>✅ AI Detection script loaded successfully!</p>' +
+                '<p>Bot detection is now active.</p>';
+        };
+        script.onerror = function() {
+            document.getElementById('detection-result').innerHTML = 
+                '<p>❌ Failed to load AI detection script.</p>' +
+                '<p>API server might be offline.</p>';
+        };
+        document.head.appendChild(script);
+    })();
+
+    // Update timestamp
+    document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    
+    // Log challenge info
+    console.log('🤖 AI Detector Challenge Page');
+    console.log('🔍 Challenge Code: AI-DETECTOR-WORKS-2024');
+    console.log('🛡️ Security Token: detection-active-2024');
+    </script>
+</body>
+</html>
